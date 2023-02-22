@@ -1,0 +1,70 @@
+---
+
+
+name: 'main-workflow'
+run-name: "Main workflow"
+
+on:
+  push:
+
+jobs:
+
+  'main-job':
+    name: "Main job"
+
+    runs-on: 'ubuntu-22.04'
+
+    steps:
+
+      - name: "Setup Node.js"
+        uses: 'actions/setup-node@v3'
+        with:
+          node-version: '16'
+
+      - name: "Checkout code"
+        uses: 'actions/checkout@v3'
+
+      - name: "Install"
+        run: "npm ci"
+
+      - name: "Test"
+        run: "npm test"
+
+      - name: "Build"
+        run: "npm run build"
+
+      - name: "Upload build artifact for GitHub Pages"
+        if: "github.ref_name == 'main'"
+        uses: 'actions/upload-pages-artifact@v1'
+        with:
+          path: 'build'
+
+  'deploy-job':
+    name: "Deploy to GitHub Pages"
+
+    if: "github.ref_name == 'main'"
+
+    needs: ['main-job']
+
+    permissions:
+      contents: 'read'
+      pages: 'write'
+      id-token: 'write'
+
+    environment:
+      name: 'github-pages'
+      url: '${{ steps.deployment.outputs.page_url }}'
+
+    runs-on: 'ubuntu-22.04'
+
+    steps:
+
+      - name: "Configure GitHub Pages"
+        uses: 'actions/configure-pages@v3'
+
+      - name: "Deploy to GitHub Pages"
+        id: 'deployment'
+        uses: 'actions/deploy-pages@v1'
+
+
+...  # EOF
