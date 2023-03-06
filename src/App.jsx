@@ -208,10 +208,15 @@ function moveTrack(list, newPosition, oldPosition) {
 }
 
 const initialList = [
+  'https://www.youtube.com/watch?v=jNQXAC9IVRw',
 ];
 
+function listInitializer(urls) {
+  return urls.map((url) => ({uuid: crypto.randomUUID, url}));
+}
+
 function App() {
-  const [list, dispatch] = React.useReducer(reducer, initialList);
+  const [list, dispatch] = React.useReducer(reducer, initialList, listInitializer);
 
   return (
     <>
