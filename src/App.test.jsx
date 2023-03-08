@@ -14,7 +14,7 @@ Object.defineProperty(globalThis, 'crypto', {
 
 test('renders app', () => {
   render(<App />);
-  const element = screen.getByText(/app/i);
+  const element = screen.getByText(/pledit/i);
   expect(element).toBeInTheDocument();
 });
 

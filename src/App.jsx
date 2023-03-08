@@ -220,7 +220,7 @@ function App() {
 
   return (
     <>
-    <p>App</p>
+    <h1>Pledit</h1>
     <AddInput dispatch={dispatch} />
     <PlaylistTable list={list} dispatch={dispatch} />
     <Yt.PlaylistEmbed list={list} dispatch={dispatch} />
