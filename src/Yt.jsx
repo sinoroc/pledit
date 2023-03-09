@@ -3,11 +3,6 @@
 
 function PlaylistEmbed({list}) {
 
-  function getIdFromUrl(url) {
-    const uid = new URL(url).searchParams.get('v');
-    return uid;
-  }
-
   function buildEmbedUrl(ids) {
     const url = `https://www.youtube-nocookie.com/embed?playlist=${ids}`;
     return url;
@@ -37,7 +32,7 @@ function PlaylistEmbed({list}) {
     );
   }
 
-  const ids = list.map(item => getIdFromUrl(item.url)).join(',');
+  const ids = list.map(item => extractId(item.url)).join(',');
 
   return (
     <figure>
@@ -47,7 +42,52 @@ function PlaylistEmbed({list}) {
   );
 }
 
+function makeCanonicalUrl(str) {
+  let url = null;
+  const id = extractId(str);
+  if (id !== null) {
+    url = canonicalUrl(id);
+  }
+  return url;
+}
+
+function canonicalUrl(id) {
+  let url = null;
+  if (id !== null) {
+    url = `https://www.youtube.com/watch?v=${id}`;
+  }
+  return url;
+}
+
+function extractId(str) {
+  let id = null;
+  const url = new URL(str);
+  const longHostNames = [
+    'youtube.com',
+    'youtube-nocookie.com',
+    'm.youtube.com',
+    'music.youtube.com',
+    'www.youtube.com',
+    'www.youtube-nocookie.com',
+  ];
+  const shortHostNames = [
+    'youtu.be',
+  ];
+  if (longHostNames.includes(url.hostname)) {
+    if (url.searchParams.has('v')) {
+      id = url.searchParams.get('v');
+    }
+  } else if (shortHostNames.includes(url.hostname)) {
+    const pathParts = url.pathname.split('/');
+    if (pathParts.length > 1) {
+      id = pathParts[1];
+    }
+  }
+  return id;
+}
+
 export {
+  makeCanonicalUrl,
   PlaylistEmbed,
 };
 
