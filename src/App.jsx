@@ -7,7 +7,7 @@ import * as Yt from './Yt';
 
 
 function AddInput({dispatch}) {
-  const pattern = "^https:\\/\\/(?:www|m)\\.youtube\\.com\\/watch\\?v=[A-Za-z0-9]+$";
+  const pattern = "^((?:https:?:)?\\/\\/)?((?:www|m|music)\\.)?((?:youtube(-nocookie)?\\.com|youtu\\.be))\\/.*$";
   const placeholder = "https://www.youtube.com/watch?v=jNQXAC9IVRw";
 
   function onFormSubmitted(e) {
@@ -172,8 +172,15 @@ function reducer(list, action) {
   }
 }
 
-function addTrack(list, url) {
-  return [...list, {uuid: crypto.randomUUID(), url}];
+function addTrack(list, str) {
+  let newList = null;
+  const url = Yt.makeCanonicalUrl(str);
+  if (url !== null) {
+    newList = [...list, {uuid: crypto.randomUUID(), url}];
+  } else {
+    newList = list;  // return current state to skip unnecessary re-rendering
+  }
+  return newList;
 }
 
 function deleteTrack(list, uuid) {
@@ -212,7 +219,10 @@ const initialList = [
 ];
 
 function listInitializer(urls) {
-  return urls.map((url) => ({uuid: crypto.randomUUID, url}));
+  return urls.map((url) => ({
+    uuid: crypto.randomUUID,
+    url: Yt.makeCanonicalUrl(url),
+  }));
 }
 
 function App() {
