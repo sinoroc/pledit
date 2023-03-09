@@ -25,9 +25,12 @@ function PlaylistEmbed({list}) {
     return (
       <iframe
       allow="fullscreen"
-      title="Embedded playlist view"
+      height={270}
       src={url}
-      type="text/html">
+      title="Embedded playlist view"
+      type="text/html"
+      width={480}
+      >
       </iframe>
     );
   }
