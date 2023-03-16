@@ -7,8 +7,8 @@ import * as Yt from './Yt';
 
 
 function AddInput({dispatch}) {
-  const pattern = "^((?:https:?:)?\\/\\/)?((?:www|m|music)\\.)?((?:youtube(-nocookie)?\\.com|youtu\\.be))\\/.*$";
-  const placeholder = "https://www.youtube.com/watch?v=jNQXAC9IVRw";
+  const pattern = '^((?:https:?:)?\\/\\/)?((?:www|m|music)\\.)?((?:youtube(-nocookie)?\\.com|youtu\\.be))\\/.*$';
+  const placeholder = 'https://www.youtube.com/watch?v=jNQXAC9IVRw';
 
   const dialogId = React.useId();
 
@@ -32,20 +32,20 @@ function AddInput({dispatch}) {
   return (
     <>
     <dialog id={dialogId}>
-    <form method="dialog" onSubmit={onFormSubmitted}>
+    <form method='dialog' onSubmit={onFormSubmitted}>
     <p>
     <label>
     Add URL:
-    <input autoFocus name="url" pattern={pattern} placeholder={placeholder} required title="URL" type="url" />
+    <input autoFocus name='url' pattern={pattern} placeholder={placeholder} required title='URL' type='url' />
     </label>
     </p>
     <p>
-    <button onClick={handleCancelButtonClick} type="reset">Cancel</button>
-    <button type="submit">Add</button>
+    <button onClick={handleCancelButtonClick} type='reset'>Cancel</button>
+    <button type='submit'>Add</button>
     </p>
     </form>
     </dialog>
-    <button onClick={handleAddButtonClick} type="button">Add...</button>
+    <button onClick={handleAddButtonClick} type='button'>Add...</button>
     </>
   );
 }
@@ -133,11 +133,11 @@ function PlaylistRow({dispatch, item, position}) {
     <td><a href={item.url}>{item.url}</a></td>
     <td>#{position + 1}</td>
     <td>
-    <button type="button" onClick={handleDelete}>Delete</button>
-    <button type="button" onClick={handleTop}>Top</button>
-    <button type="button" onClick={handleUp}>Up</button>
-    <button type="button" onClick={handleDown}>Down</button>
-    <button type="button" onClick={handleBottom}>Bottom</button>
+    <button type='button' onClick={handleDelete}>Delete</button>
+    <button type='button' onClick={handleTop}>Top</button>
+    <button type='button' onClick={handleUp}>Up</button>
+    <button type='button' onClick={handleDown}>Down</button>
+    <button type='button' onClick={handleBottom}>Bottom</button>
     </td>
     </tr>
   );
@@ -163,9 +163,9 @@ function PlaylistTable({list, dispatch}) {
     <caption>Playlist</caption>
     <thead>
     <tr>
-    <th scope="col">URL</th>
-    <th scope="col">Position</th>
-    <th scope="col">Edit</th>
+    <th scope='col'>URL</th>
+    <th scope='col'>Position</th>
+    <th scope='col'>Edit</th>
     </tr>
     </thead>
     <tbody>{rows}</tbody>
