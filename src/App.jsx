@@ -27,7 +27,6 @@ function AddInput({dispatch}) {
 
   function handleCancelButtonClick(e) {
     document.getElementById(dialogId).close();
-    e.preventDefault();
   }
 
   return (
@@ -41,7 +40,7 @@ function AddInput({dispatch}) {
     </label>
     </p>
     <p>
-    <button onClick={handleCancelButtonClick} type="button">Cancel</button>
+    <button onClick={handleCancelButtonClick} type="reset">Cancel</button>
     <button type="submit">Add</button>
     </p>
     </form>
