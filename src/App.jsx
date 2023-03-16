@@ -10,25 +10,44 @@ function AddInput({dispatch}) {
   const pattern = "^((?:https:?:)?\\/\\/)?((?:www|m|music)\\.)?((?:youtube(-nocookie)?\\.com|youtu\\.be))\\/.*$";
   const placeholder = "https://www.youtube.com/watch?v=jNQXAC9IVRw";
 
+  const dialogId = React.useId();
+
   function onFormSubmitted(e) {
     const url = new FormData(e.target).get('url');
     dispatch({
       type: 'add',
       url,
     });
+  }
+
+  function handleAddButtonClick(e) {
+    document.getElementById(dialogId).showModal();
+    e.preventDefault();
+  }
+
+  function handleCancelButtonClick(e) {
+    document.getElementById(dialogId).close();
     e.preventDefault();
   }
 
   return (
-    <form onSubmit={onFormSubmitted}>
+    <>
+    <dialog id={dialogId}>
+    <form method="dialog" onSubmit={onFormSubmitted}>
     <p>
     <label>
     Add URL:
-    <input name="url" pattern={pattern} placeholder={placeholder} required title="URL" type="url" />
+    <input autoFocus name="url" pattern={pattern} placeholder={placeholder} required title="URL" type="url" />
     </label>
     </p>
-    <p><input type="submit" /></p>
+    <p>
+    <button onClick={handleCancelButtonClick} type="button">Cancel</button>
+    <button type="submit">Add</button>
+    </p>
     </form>
+    </dialog>
+    <button onClick={handleAddButtonClick} type="button">Add...</button>
+    </>
   );
 }
 
@@ -151,6 +170,13 @@ function PlaylistTable({list, dispatch}) {
     </tr>
     </thead>
     <tbody>{rows}</tbody>
+    <tfoot>
+    <tr>
+    <td colSpan={3}>
+    <AddInput dispatch={dispatch} />
+    </td>
+    </tr>
+    </tfoot>
     </table>
   );
 }
@@ -231,7 +257,6 @@ function App() {
   return (
     <>
     <h1>Pledit</h1>
-    <AddInput dispatch={dispatch} />
     <PlaylistTable list={list} dispatch={dispatch} />
     <Yt.PlaylistEmbed list={list} dispatch={dispatch} />
     </>
