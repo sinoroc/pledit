@@ -11,8 +11,9 @@ function AddInput({dispatch}) {
   const placeholder = 'https://www.youtube.com/watch?v=jNQXAC9IVRw';
 
   const dialogId = React.useId();
+  const formId = React.useId();
 
-  function onFormSubmitted(e) {
+  function handleFormSubmit(e) {
     const url = new FormData(e.target).get('url');
     dispatch({
       type: 'add',
@@ -22,17 +23,20 @@ function AddInput({dispatch}) {
 
   function handleAddButtonClick(e) {
     document.getElementById(dialogId).showModal();
-    e.preventDefault();
   }
 
   function handleCancelButtonClick(e) {
     document.getElementById(dialogId).close();
   }
 
+  function handleDialogClose(e) {
+    document.getElementById(formId).reset();
+  }
+
   return (
     <>
-    <dialog id={dialogId}>
-    <form method='dialog' onSubmit={onFormSubmitted}>
+    <dialog id={dialogId} onClose={handleDialogClose}>
+    <form id={formId} method='dialog' onSubmit={handleFormSubmit}>
     <p>
     <label>
     Add URL:
@@ -40,7 +44,7 @@ function AddInput({dispatch}) {
     </label>
     </p>
     <p>
-    <button onClick={handleCancelButtonClick} type='reset'>Cancel</button>
+    <button onClick={handleCancelButtonClick} type='button'>Cancel</button>
     <button type='submit'>Add</button>
     </p>
     </form>
