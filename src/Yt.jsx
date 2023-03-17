@@ -3,25 +3,25 @@
 
 function PlaylistEmbed({list}) {
 
-  function buildEmbedUrl(ids) {
-    const url = `https://www.youtube-nocookie.com/embed?playlist=${ids}`;
+  function buildEmbedUrl(vids) {
+    const url = `https://www.youtube-nocookie.com/embed?playlist=${vids}`;
     return url;
   }
 
-  function buildExtUrl(ids) {
-    const url = `https://www.youtube.com/watch_videos?video_ids=${ids}`;
+  function buildExtUrl(vids) {
+    const url = `https://www.youtube.com/watch_videos?video_ids=${vids}`;
     return url;
   }
 
-  function Link({ids}) {
-    const url = buildExtUrl(ids);
+  function Link({vids}) {
+    const url = buildExtUrl(vids);
     return (
       <a href={url}>View on YouTube</a>
     );
   }
 
-  function Iframe({ids}) {
-    const url = buildEmbedUrl(ids);
+  function Iframe({vids}) {
+    const url = buildEmbedUrl(vids);
     return (
       <iframe
       allow="fullscreen"
@@ -35,35 +35,26 @@ function PlaylistEmbed({list}) {
     );
   }
 
-  const ids = list.map(item => extractId(item.url)).join(',');
+  const vids = list.map(track => track.vid).join(',');
 
   return (
     <figure>
-    <Iframe ids={ids} />
-    <figcaption><Link ids={ids} /></figcaption>
+    <Iframe vids={vids} />
+    <figcaption><Link vids={vids} /></figcaption>
     </figure>
   );
 }
 
-function makeCanonicalUrl(str) {
+function getUrl(vid) {
   let url = null;
-  const id = extractId(str);
-  if (id !== null) {
-    url = canonicalUrl(id);
+  if (vid !== null) {
+    url = `https://www.youtube.com/watch?v=${vid}`;
   }
   return url;
 }
 
-function canonicalUrl(id) {
-  let url = null;
-  if (id !== null) {
-    url = `https://www.youtube.com/watch?v=${id}`;
-  }
-  return url;
-}
-
-function extractId(str) {
-  let id = null;
+function getVid(str) {
+  let vid = null;
   const url = new URL(str);
   const longHostNames = [
     'youtube.com',
@@ -78,19 +69,23 @@ function extractId(str) {
   ];
   if (longHostNames.includes(url.hostname)) {
     if (url.searchParams.has('v')) {
-      id = url.searchParams.get('v');
+      vid = url.searchParams.get('v');
     }
   } else if (shortHostNames.includes(url.hostname)) {
     const pathParts = url.pathname.split('/');
     if (pathParts.length > 1) {
-      id = pathParts[1];
+      vid = pathParts[1];
     }
   }
-  return id;
+  return vid;
 }
 
+const PATTERN = '^((?:https:?:)?\\/\\/)?((?:www|m|music)\\.)?((?:youtube(-nocookie)?\\.com|youtu\\.be))\\/.*$';
+
 export {
-  makeCanonicalUrl,
+  getUrl,
+  getVid,
+  PATTERN,
   PlaylistEmbed,
 };
 

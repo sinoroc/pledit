@@ -7,8 +7,7 @@ import * as Yt from './Yt';
 
 
 function AddInput({dispatch}) {
-  const pattern = '^((?:https:?:)?\\/\\/)?((?:www|m|music)\\.)?((?:youtube(-nocookie)?\\.com|youtu\\.be))\\/.*$';
-  const placeholder = 'https://www.youtube.com/watch?v=jNQXAC9IVRw';
+  const PLACEHOLDER = 'https://www.youtube.com/watch?v=jNQXAC9IVRw';
 
   const dialogId = React.useId();
   const formId = React.useId();
@@ -40,7 +39,7 @@ function AddInput({dispatch}) {
     <p>
     <label>
     Add URL:
-    <input autoFocus name='url' pattern={pattern} placeholder={placeholder} required title='URL' type='url' />
+    <input autoFocus name='url' pattern={Yt.PATTERN} placeholder={PLACEHOLDER} required title='URL' type='url' />
     </label>
     </p>
     <p>
@@ -54,11 +53,12 @@ function AddInput({dispatch}) {
   );
 }
 
-function PlaylistRow({dispatch, item, position}) {
+function PlaylistRow({dispatch, track, position}) {
+
   function handleDelete(e) {
     dispatch({
       type: 'delete',
-      uuid: item.uuid,
+      uuid: track.uuid,
     });
     e.preventDefault();
   }
@@ -132,9 +132,11 @@ function PlaylistRow({dispatch, item, position}) {
     }
   }
 
+  const url = Yt.getUrl(track.vid);
+
   return (
     <tr draggable={true} onDragStart={dragStart} onDragOver={dragOver} onDrop={drop}>
-    <td><a href={item.url}>{item.url}</a></td>
+    <td><a href={url}><samp>{track.vid}</samp></a></td>
     <td>#{position + 1}</td>
     <td>
     <button type='button' onClick={handleDelete}>Delete</button>
@@ -151,12 +153,12 @@ function PlaylistTable({list, dispatch}) {
   const rows = [];
   let position = 0;
 
-  list.forEach((item) => {
+  list.forEach((track) => {
     rows.push(
       <PlaylistRow
-      item={item}
+      track={track}
       dispatch={dispatch}
-      key={item.uuid}
+      key={track.uuid}
       position={position}/>
     );
     ++position;
@@ -201,11 +203,11 @@ function reducer(list, action) {
   }
 }
 
-function addTrack(list, str) {
+function addTrack(list, url) {
   let newList = null;
-  const url = Yt.makeCanonicalUrl(str);
-  if (url !== null) {
-    newList = [...list, {uuid: crypto.randomUUID(), url}];
+  const vid = Yt.getVid(url);
+  if (vid !== null) {
+    newList = [...list, {uuid: crypto.randomUUID(), vid}];
   } else {
     newList = list;  // return current state to skip unnecessary re-rendering
   }
@@ -213,7 +215,7 @@ function addTrack(list, str) {
 }
 
 function deleteTrack(list, uuid) {
-  return list.filter(item => item.uuid !== uuid);
+  return list.filter(track => track.uuid !== uuid);
 }
 
 function moveTrack(list, newPosition, oldPosition) {
@@ -244,13 +246,13 @@ function moveTrack(list, newPosition, oldPosition) {
 }
 
 const initialList = [
-  'https://www.youtube.com/watch?v=jNQXAC9IVRw',
+  'jNQXAC9IVRw',
 ];
 
-function listInitializer(urls) {
-  return urls.map((url) => ({
-    uuid: crypto.randomUUID,
-    url: Yt.makeCanonicalUrl(url),
+function listInitializer(vids) {
+  return vids.map((vid) => ({
+    uuid: crypto.randomUUID(),
+    vid,
   }));
 }
 
